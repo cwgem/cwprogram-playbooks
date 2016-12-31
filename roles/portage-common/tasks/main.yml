@@ -1,0 +1,15 @@
+---
+- hosts: django
+  tasks:
+  - name: Test to see if it has been one week since last emerge --sync
+    shell: test $(date "+%s") -gt $(date -d "$(</usr/portage/metadata/timestamp) +1 week" "+%s")
+    notify:
+    - sync and update
+
+  handlers:
+  - name: sync and update
+    command: "{{item}}"
+    with_items:
+    - emerge --sync
+    - emerge -uD @world
+    become: true

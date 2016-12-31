@@ -1,0 +1,8 @@
+---
+- name: create iptables.d directory
+  file: path=/etc/iptables.d state=directory
+  become: true
+
+- name: generate base iptables rules
+  template: src=load-iptables.sh.j2 dest=/sbin/load-iptables.sh mode=0700
+  become: true

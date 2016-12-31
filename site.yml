@@ -1,0 +1,8 @@
+---
+- hosts: django
+  roles:
+    - role: iptables-common
+  post_tasks:
+    - name: load iptables
+      command: /sbin/load-iptables.sh
+      become: true

@@ -1,0 +1,37 @@
+#!/bin/bash
+
+shopt -s nullglob
+
+IPT=/sbin/iptables
+$IPT -F
+$IPT -X
+$IPT -t nat -F
+$IPT -t nat -X
+$IPT -t mangle -F
+$IPT -t mangle -X
+$IPT -P INPUT DROP
+$IPT -P FORWARD DROP
+$IPT -P OUTPUT DROP
+
+# Accept all localhost trafic
+$IPT -A INPUT -i lo -j ACCEPT
+$IPT -A OUTPUT -i lo -j ACCEPT
+
+# Accept connections related to prior responses
+$IPT -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+$IPT -A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+# Allow SSH
+$IPT -A INPUT -p tcp --dport 22 -m state --state NEW,ESTABLISHED -j ACCEPT
+$IPT -A OUTPUT -p tcp --dport 22 -m state --state NEW,ESTABLISHED -j ACCEPT
+
+# Outgoing DNS
+{% for server in ansible_dns.nameservers %}
+$IPT -A OUTPUT -p udp -d {{ server }} --dport 53 -m state --state NEW,ESTABLISHED -j ACCEPT
+$IPT -A OUTPUT -p tcp -d {{ server }} --dport 53 -m state --state NEW,ESTABLISHED -j ACCEPT
+{% endfor %}
+
+for script in /etc/iptables.d/*.sh
+do
+  source "$script"
+done
