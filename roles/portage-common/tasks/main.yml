@@ -1,15 +1,22 @@
 ---
-- hosts: django
-  tasks:
-  - name: Test to see if it has been one week since last emerge --sync
-    shell: test $(date "+%s") -gt $(date -d "$(</usr/portage/metadata/timestamp) +1 week" "+%s")
-    notify:
-    - sync and update
+- name: copy make.conf
+  template: src=make.conf.j2 dest=/etc/portage/make.conf
+  become: true
 
-  handlers:
-  - name: sync and update
-    command: "{{item}}"
-    with_items:
-    - emerge --sync
-    - emerge -uD @world
-    become: true
+- name: test to see if it has been one week since last emerge --sync
+  shell: test $(date "+%s") -gt $(date -d "$(</usr/portage/metadata/timestamp) +1 week" "+%s"
+  register: timestamp_check
+  changed_when: "timestamp_check.rc == 0"
+  failed_when: "timestamp_check.rc > 1"
+  notify:
+  - sync and update
+
+- name: add portage related iptables rules
+  copy: src=portage_iptables.sh.j2 dest=/etc/iptables.d/portage_iptables.sh mode=0700
+  become: true
+
+- name: install basic packages
+  portage: package={{item}} state=present
+  with_items:
+    - dev-vcs/git
+  become: true

@@ -1,4 +1,9 @@
 ---
+- name: install iptables
+  portage:
+    package: net-firewall/iptables
+    state: present
+
 - name: create iptables.d directory
   file: path=/etc/iptables.d state=directory
   become: true

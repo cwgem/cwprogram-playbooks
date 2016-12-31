@@ -1,0 +1,9 @@
+# Allow FTP
+$IPT -A OUTPUT -p tcp --dport 21 -m state --state NEW -j ACCEPT
+
+# Allow HTTP/S
+$IPT -A OUTPUT -p tcp --dport 80 -m state --state NEW -j ACCEPT
+$IPT -A OUTPUT -p tcp --dport 443 -m state --state NEW -j ACCEPT
+
+# Allow Rsync
+$IPT -A OUTPUT -p tcp --sport 873 -m state --state NEW -j ACCEPT

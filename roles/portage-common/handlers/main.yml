@@ -1,0 +1,8 @@
+---
+- name: sync and update
+  portage:
+    package: "@world"
+    update: yes
+    deep: yes
+    sync: yes
+  become: true
