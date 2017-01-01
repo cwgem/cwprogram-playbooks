@@ -3,6 +3,14 @@
   template: src=make.conf.j2 dest=/etc/portage/make.conf
   become: true
 
+- name: ensure /etc/portage/profile
+  file: path=/etc/portage/profile state=directory
+  become: true
+
+- name: ensure make.defaults
+  file: path=/etc/portage/profile/make.defaults state=touch
+  become: true
+
 - name: test to see if it has been one week since last emerge --sync
   shell: test $(date "+%s") -gt $(date -d "$(</usr/portage/metadata/timestamp) +1 week" "+%s"
   register: timestamp_check
@@ -19,4 +27,6 @@
   portage: package={{item}} state=present
   with_items:
     - dev-vcs/git
+    - dev-util/strace
+    - app-misc/tmux
   become: true
