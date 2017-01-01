@@ -15,7 +15,7 @@ $IPT -P OUTPUT DROP
 
 # Accept all localhost trafic
 $IPT -A INPUT -i lo -j ACCEPT
-$IPT -A OUTPUT -i lo -j ACCEPT
+$IPT -A OUTPUT -o lo -j ACCEPT
 
 # Accept connections related to prior responses
 $IPT -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
