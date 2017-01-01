@@ -16,10 +16,15 @@
   copy: src=python35.usemask.j2 dest=/etc/portage/profile/use.mask
   become: true
 
+- name: setup python35 USE
+  copy: src=python35.use.j2 dest=/etc/portage/package.use/python35
+  become: true
+
 - name: install python35
   portage:
     package: dev-lang/python:3.5
     state: present
+    changed_use: false
   become: true
 
 - name: set python35 as default
