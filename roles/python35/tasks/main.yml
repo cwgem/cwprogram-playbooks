@@ -1,0 +1,33 @@
+---
+- name: add python35 make.defaults entries
+  blockinfile:
+    dest: /etc/portage/profile/make.defaults
+    marker: "# {mark} ANSIBLE MANAGED BLOCK python3.5"
+    block: |
+      PYTHON_TARGETS="python2_7 python3_4 python3_5"
+      PYTHON_SINGLE_TARGET="python3_5"
+  become: true
+
+- name: add python35 package.keyword entries
+  copy: src=python35.keywords.j2 dest=/etc/portage/package.keywords/python35
+  become: true
+
+- name: unmask python35 target
+  copy: src=python35.usemask.j2 dest=/etc/portage/profile/use.mask
+  become: true
+
+- name: install python35
+  portage:
+    package: dev-lang/python:3.5
+    state: present
+  become: true
+
+- name: Add pip related package.keywords entries
+  copy: src=pip.keywords.j2 dest=/etc/portage/package.keywords/pip
+  become: true
+
+- name: install pip
+  portage:
+    package: dev-python/pip
+    state: present
+  become: true

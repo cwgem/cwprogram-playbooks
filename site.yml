@@ -3,6 +3,7 @@
   roles:
     - role: iptables-common
     - role: portage-common
+    - role: python35
   post_tasks:
     - name: load iptables
       command: /sbin/load-iptables.sh
