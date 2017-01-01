@@ -7,6 +7,10 @@
   file: path=/etc/portage/profile state=directory
   become: true
 
+- name: ensure /etc/portage/repos.conf
+  file: path=/etc/portage/repos.conf state=directory
+  become: true
+
 - name: ensure make.defaults
   file: path=/etc/portage/profile/make.defaults state=touch
   become: true

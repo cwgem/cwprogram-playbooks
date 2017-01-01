@@ -22,6 +22,10 @@
     state: present
   become: true
 
+- name: set python35 as default
+  shell: eselect python set python3.5
+  become: true
+
 - name: Add pip related package.keywords entries
   copy: src=pip.keywords.j2 dest=/etc/portage/package.keywords/pip
   become: true

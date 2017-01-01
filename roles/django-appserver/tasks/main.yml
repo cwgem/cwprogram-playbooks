@@ -1,0 +1,21 @@
+---
+- name: install django
+  portage:
+    package: dev-python/django
+    state: present
+  become: true
+
+- name: get python3.5 repo
+  git:
+    repo: git@github.com:cwgem/gentoo-python35.git
+    dest: "{{ansible_env.HOME}}/gentoo-python35"
+
+- name: setup python3.5 repo
+  template: src=python35.repos.conf.j2 dest=/etc/portage/repos.conf/gentoo-python35
+  become: true
+
+- name: install gunicorn
+  portage:
+    package: www-servers/gunicorn
+    state: present
+  become: true
