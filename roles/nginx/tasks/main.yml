@@ -1,0 +1,19 @@
+---
+- name: add nginx make.defaults entries
+  blockinfile:
+    dest: /etc/portage/profile/make.defaults
+    marker: "# {mark} ANSIBLE MANAGED BLOCK nginx"
+    block: |
+      NGINX_MODULES_HTTP="access auth_basic autoindex browser charset empty_gif fastcgi geo gzip limit_conn limit_req map memcached proxy referer rewrite scgi split_clients ssi upstream_ip_hash userid uwsgi echo headers_more spdy upload_progress"
+      NGINX_MODULES_STREAM="limit_conn"
+  become: true
+
+- name: add nginx firewall rules
+  copy: src=nginx_iptables.sh.j2 dest=/etc/iptables.d/nginx_iptables.sh
+  become: true
+
+- name: install nginx
+  portage:
+    package: www-servers/nginx
+    state: present
+  become: true

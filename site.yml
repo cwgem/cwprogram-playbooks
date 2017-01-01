@@ -5,6 +5,7 @@
     - role: portage-common
     - role: python35
     - role: django-appserver
+    - role: nginx
   post_tasks:
     - name: load iptables
       command: /sbin/load-iptables.sh
