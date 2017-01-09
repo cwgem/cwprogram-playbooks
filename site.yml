@@ -1,5 +1,10 @@
 ---
 - hosts: django
+  pre_tasks:
+    - name: checkout site repo
+      git:
+        repo: https://github.com/cwgem/cwprogram.com
+        dest: "{{ansible_env.HOME}}/cwprogram.com"
   roles:
     - role: iptables-common
     - role: portage-common
@@ -9,4 +14,9 @@
   post_tasks:
     - name: load iptables
       command: /sbin/load-iptables.sh
+      become: true
+    - name: reload nginx
+      service:
+        name: nginx
+        state: reloaded
       become: true
